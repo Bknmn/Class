@@ -1,0 +1,64 @@
+import cobra
+def funcion():
+    model= cobra.io.read_sbml_model ("iHN637.xml")
+print len(model.reactions)
+print len(model.metabolites)
+print model.objective
+
+solution = model.optimize()
+model.summary()
+
+for reaction in model.metabolites.get_by_id('fru_e').reactions:
+    print reaction.id, reaction.bounds
+
+from cobra.flux_analysis import flux_variability_analysis
+fva=flux_variability_analysis(model)
+
+print model.metabolites.get_by_id('fru_e').reactions
+print "value"
+print fva.loc['EX_fru_e']
+
+solution = model.optimize()
+model.summary(fva=1)
+
+solution = model.optimize()
+model.summary(fva=0.95)
+
+fba_solution = model.optimize()
+pfba_solution = cobra.flux_analysis.pfba(model)
+
+print fba_solution.objective_value
+print pfba_solution.objective_value
+
+print sum(fba_solution.fluxes)
+
+print sum(pfba_solution.fluxes)
+
+geometric_fba_sol = cobra.flux_analysis.geometric_fba(model)
+geometric_fba_sol
+
+import argparse
+
+def getParser():
+    parser = argparse.ArgumentParser(description='Descripcion de la funcion de este programa.')
+    parser.add_argument('-o',type=str,dest="formato",help="'png' si la imagen es guardada en formato PNG,                                                            ,o 'pdf' para ser guradada en formato PDF")
+
+    if len(sys.argv) == 1:
+        print >> sys.stderr,parser.print_help()
+        exit(0)
+    return parser
+
+def main():
+    args=getParser().parse_args()
+    formato=args.formato
+
+    ....
+
+    if formato=="png":
+        plt.savefig("Tarea_6_FV.png")
+    elif formato=="pdf":
+        plt.savefig("Tarea_6_FV.pdf")
+
+
+
+
